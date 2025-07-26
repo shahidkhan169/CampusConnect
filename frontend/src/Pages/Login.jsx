@@ -13,11 +13,16 @@ function Login() {
           backgroundPosition: 'center',
         }}
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 opacity-70"></div>
-        <div className="relative z-10 px-12 max-w-lg">
+        {/* Deep navy base overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 opacity-80"></div>
+        {/* Soft warm tint */}
+        <div className="absolute inset-0 bg-gradient-to-tr from-rose-600/20 to-transparent pointer-events-none"></div>
+
+        {/* Content */}
+        <div className="relative z-20 px-12 max-w-lg text">
           <h1 className="text-3xl md:text-5xl font-bold leading-tight text-white">
-            Welcome Back to <br />
-            <span className="text-yellow-300 ">Campus Connect</span>
+            Welcome  <br />
+            <span className="text-orange-200 drop-shadow-lg">Campus Connect</span>
           </h1>
         </div>
       </div>
@@ -28,8 +33,8 @@ function Login() {
           {/* Logo / Brand */}
           <div className="text-center">
             <h1 className="text-3xl font-extrabold text-gray-800">
-              <span className="text-blue-600">C</span>ampus
-              <span className="text-indigo-600"> C</span>onnect
+              <span className="text-rose-600 text-5xl">C</span>ampus
+              <span className="text-orange-500 text-5xl"> C</span>onnect
             </h1>
             <p className="text-gray-500 text-sm mt-1">Sign in to your academic hub</p>
           </div>
@@ -44,8 +49,8 @@ function Login() {
               <input
                 id="email"
                 type="email"
-                className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out"
-                placeholder="you@example.edu"
+                className="w-full px-4 py-3 bg-white border-0 border-b-2 border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none  focus:ring-rose-500 focus:border-rose-500 transition duration-200 ease-in-out"
+                placeholder="kongu.edu"
               />
             </div>
 
@@ -55,14 +60,14 @@ function Login() {
                 <label htmlFor="password" className="text-sm font-medium text-gray-700">
                   Password
                 </label>
-                <a href="#forgot" className="text-xs text-blue-600 hover:text-blue-800">
+                <a href="#forgot" className="text-xs text-rose-600 hover:text-rose-800 font-medium">
                   Forgot password?
                 </a>
               </div>
               <input
                 id="password"
                 type="password"
-                className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out"
+                className="w-full px-4 py-3 bg border-0 border-b-2 border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:border-rose-500 transition duration-200 ease-in-out"
                 placeholder="••••••••"
               />
             </div>
@@ -70,7 +75,7 @@ function Login() {
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium rounded-lg shadow hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-200"
+              className="w-full py-3 px-4 bg-gradient-to-r from-rose-500 to-orange-500 text-white font-semibold rounded-lg shadow-md hover:from-rose-600 hover:to-orange-600 focus:outline-none focus:ring-4 focus:ring-rose-300 transform transition hover:scale-[1.02] duration-200"
             >
               Log In
             </button>
