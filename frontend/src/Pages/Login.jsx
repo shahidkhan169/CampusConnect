@@ -21,7 +21,7 @@ function Login() {
         {/* Content */}
         <div className="relative z-20 px-12 max-w-lg text">
           <h1 className="text-3xl md:text-5xl font-bold leading-tight text-white">
-            Welcome  <br />
+            Welcome to <br />
             <span className="text-orange-200 drop-shadow-lg">Campus Connect</span>
           </h1>
         </div>
@@ -41,6 +41,38 @@ function Login() {
 
           {/* Form */}
           <form className="space-y-6 mt-6">
+            {/* User Role Selection */}
+            <div className="flex flex-col">
+              <label className="text-sm font-medium text-gray-700 mb-2">
+                I am a:
+              </label>
+              <div className="flex space-x-6">
+                <div className="flex items-center">
+                  <input
+                    id="student"
+                    type="radio"
+                    name="role"
+                    defaultChecked
+                    className="h-4 w-4 text-rose-600 focus:ring-rose-500 border-gray-300"
+                  />
+                  <label htmlFor="student" className="ml-2 block text-sm text-gray-700">
+                    Student
+                  </label>
+                </div>
+                <div className="flex items-center">
+                  <input
+                    id="alumni"
+                    type="radio"
+                    name="role"
+                    className="h-4 w-4 text-rose-600 focus:ring-rose-500 border-gray-300"
+                  />
+                  <label htmlFor="alumni" className="ml-2 block text-sm text-gray-700">
+                    Alumni
+                  </label>
+                </div>
+              </div>
+            </div>
+
             {/* Email Field */}
             <div className="flex flex-col">
               <label htmlFor="email" className="text-sm font-medium text-gray-700 mb-1">
@@ -49,8 +81,8 @@ function Login() {
               <input
                 id="email"
                 type="email"
-                className="w-full px-4 py-3 bg-white border-0 border-b-2 border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none  focus:ring-rose-500 focus:border-rose-500 transition duration-200 ease-in-out"
-                placeholder="kongu.edu"
+                className="w-full px-4 py-3 bg-white border-0 border-b-2 border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-rose-500 focus:border-rose-500 transition duration-200 ease-in-out"
+                placeholder="your.email@kongu.edu"
               />
             </div>
 
@@ -67,7 +99,7 @@ function Login() {
               <input
                 id="password"
                 type="password"
-                className="w-full px-4 py-3 bg border-0 border-b-2 border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:border-rose-500 transition duration-200 ease-in-out"
+                className="w-full px-4 py-3 bg-white border-0 border-b-2 border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:border-rose-500 transition duration-200 ease-in-out"
                 placeholder="••••••••"
               />
             </div>
