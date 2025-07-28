@@ -41,12 +41,21 @@ const studentSchema=new mongoose.Schema({
     email:{
         type:String,
         required:true,
-        trim:true
+        trim:true,
+        unique:true
     },
     password:{
         type:String,
         required:true,
         trim:true
+    },
+    tokensRemaining:{
+        type:Number,
+        default:5
+    },
+    lastTokenReset:{
+        type:Date,
+        default:Date.now()
     }
 })
 

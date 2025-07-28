@@ -7,3 +7,5 @@ export const ALUMNI_MODEL="Alumni"
 export const COMPANY_MODEL="Company"
 
 export const INVITATION_MODEL="Invitation"
+
+export const TOKEN_MODEL="Token"

@@ -1,30 +1,28 @@
 import mongoose from "mongoose";
 import { ADMIN_MODEL, INVITATION_MODEL } from "../constants/model.constants.js";
-import { INVITATION_STATUS } from "../constants/status.constants.js";
+import { STATUS } from "../constants/status.constants.js";
 
-
-
-const invitationSchema=new mongoose.Schema({
-    email:{
-        type:String,
-        required:true,
+const invitationSchema = new mongoose.Schema({
+    email: {
+        type: String,
+        required: true,
     },
-    status:{
-        type:String,
-        enum:INVITATION_STATUS,
-        default:INVITATION_STATUS.PENDING
+    status: {
+        type: String,
+        enum: STATUS,
+        default: STATUS.PENDING
     },
-    sendBy:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:ADMIN_MODEL
+    sendBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: ADMIN_MODEL
     },
-    sendAt:{
-        type:Date,
-        default:Date.now()
+    sendAt: {
+        type: Date,
+        default: Date.now()
     },
-    acceptedAt:{
-        type:Date
+    acceptedAt: {
+        type: Date
     }
 })
 
-export const Invitation=mongoose.model(INVITATION_MODEL,invitationSchema);
+export const Invitation = mongoose.model(INVITATION_MODEL, invitationSchema);

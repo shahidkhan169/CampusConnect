@@ -4,6 +4,7 @@ import { InvitationService, loginAdmin, registerAdmin } from "../services/admin.
 import { BadRequest } from "../utils/errors.js";
 import { GeneralResponse } from "../utils/GeneralResponse.js";
 import { EmailService } from "../utils/EmailService.js";
+import { CreateAlumniByAdmin } from "../dtos/alumni.dto.js";
 
 
 
@@ -15,8 +16,8 @@ export const Register = async (req, res, next) => {
         if (Object.keys(errors).length > 0)
             throw new BadRequest("Validation Erorr", errors);
 
-        const savedAdmin = await registerAdmin(dto);
-        res.status(201).json(new GeneralResponse(true, 201, savedAdmin, "Admin Created"));
+        const response= await registerAdmin(dto);
+        res.status(response.statusCode).json(response);
     }
     catch (err) {
         next(err);
@@ -31,8 +32,8 @@ export const Login = async (req, res, next) => {
         if (Object.keys(errors).length > 0)
             throw new BadRequest("Validation Erorr", errors);
 
-        const token = await loginAdmin(dto);
-        res.status(200).json(new GeneralResponse(true, 200, token, "Login Successfull"));
+        const response= await loginAdmin(dto);
+        res.status(response.statusCode).json(response);
     }
     catch (err) {
         next(err);
@@ -52,3 +53,13 @@ export const sendInvitation = async (req, res, next) => {
     }
 };
 
+
+export const CreateAdmin=async(req,res,next)=>{
+    try{
+        const invitationId=req.params;
+        const dto=await updateInvitation(invitationId);
+    }
+    catch(err){
+        next(err);
+    }
+}

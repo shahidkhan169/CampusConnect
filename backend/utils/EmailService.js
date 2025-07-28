@@ -1,13 +1,11 @@
 import nodemailer from 'nodemailer';
-import fs from 'fs';
-import path from 'path';
+
 
 export class EmailService {
-  static async sendInvitationEmail({ email, fullName, id }) {
-    const htmlTemplate = fs.readFileSync(path.join(process.cwd(), 'materials', 'templates', 'invitationEmail.html'), 'utf-8');
+  static async sendInvitationEmail({ email, fullName, id,template}) {
     const acceptUrl = `${process.env.BASE_URL}/invitation/accept/${id}`;
     const declineUrl = `${process.env.BASE_URL}/invitation/decline/${id}`;
-    const html = htmlTemplate
+    const html = template
         .replace('{{acceptUrl}}', acceptUrl)
         .replace('{{declineUrl}}', declineUrl)
         .replace('{{fullName}}', fullName)

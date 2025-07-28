@@ -68,3 +68,82 @@ export class LoginDto {
         return errors;
     }
 }
+
+
+export class UpdateStudentDto {
+    constructor(data) {
+        this.firstName = data.firstName;
+        this.lastName = data.lastName;
+        this.semester = data.semester;
+        this.phoneNumber = data.phoneNumber;
+        this.password = data.password;
+    }
+
+    static sanitize(data) {
+        const allowedFields = [
+            'firstName',
+            'lastName',
+            'semester',
+            'phoneNumber',
+            'password',
+        ];
+
+        const sanitized = {};
+        for (const key of allowedFields) {
+            if (data[key] !== undefined) {
+                sanitized[key] = data[key];
+            }
+        }
+        return new UpdateStudentDto(sanitized);
+    }
+    isValid() {
+        const errors = {};
+
+        if (this.password !== undefined && this.password.length < 6) {
+            errors.password = "Password must be at least 6 characters";
+        }
+
+        if (this.firstName !== undefined && this.firstName.trim() === "") {
+            errors.firstName = "First name is required";
+        }
+
+        if (this.lastName !== undefined && this.lastName.trim() === "") {
+            errors.lastName = "Last name is required";
+        }
+
+        if (this.phoneNumber !== undefined) {
+            if (
+                !isMobilePhone(this.phoneNumber, "en-IN") ||
+                !PHONEREGEXP.test(this.phoneNumber)
+            ) {
+                errors.phoneNumber = "Invalid phone number";
+            }
+        }
+
+        return errors;
+    }
+}
+
+export class TokenDto{
+    constructor(data){
+        this.mode=data.mode;
+        this.reason=data.reason;
+    }
+    isValid(){
+        const errors={}
+
+        if(!this.mode)
+            errors.mode="Communication mode is required";
+        
+        if(!this.reason)
+            errors.mode="Reason of Communication is required";
+
+        return errors;
+    }
+}
+
+export class EnterAlumniDetails{
+    constructor(data){
+        
+    }
+}
