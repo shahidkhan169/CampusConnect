@@ -9,9 +9,8 @@ const companySchema = new mongoose.Schema({
         required: true
     },
     companyImg: {
-        data: Buffer,
+        data: String,
         contentType: String,
-        fileName: String
     }
 })
 

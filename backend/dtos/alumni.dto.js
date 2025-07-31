@@ -23,7 +23,6 @@ export const alumniFirstUpdateSchema=yup.object({
         .trim()
         .required("Content type is required")
         .matches(FILEREGEXP, "Only png, jpg, jpeg, or pdf files are allowed"),
-        fileName:yup.string().trim().required("Filename is Required")
     }),
     rounds:yup.array()
     .of(

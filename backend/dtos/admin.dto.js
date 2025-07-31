@@ -17,7 +17,6 @@ export const addCompanySchema=yup.object({
             .string()
             .trim()
             .required("Content type is required")
-            .matches(FILEREGEXP, "Only png, jpg, jpeg, or pdf files are allowed"),
-            fileName:yup.string().trim().required("Filename is Required")
+            .matches(FILEREGEXP, "Only png, jpg, jpeg, files are allowed"),
         }),
 })
