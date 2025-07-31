@@ -117,3 +117,15 @@ export const updateAlumniAtFirst=async(id,dto)=>{
         "Profile Updated"
     )
 }
+
+export const getAlumni=async(id)=>{
+    const alumni=await Alumni.findById(id);
+    if(!alumni)
+        throw new BadRequest("User Not Found");
+    return new GeneralResponse(
+        true,
+        200,
+        alumni,
+        "Alumni Detail"
+    )
+}

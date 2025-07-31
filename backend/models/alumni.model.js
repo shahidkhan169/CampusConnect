@@ -43,6 +43,9 @@ const alumniSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    rollNo:{
+        type:String
+    },
     dob: {
         type: Date,
     },

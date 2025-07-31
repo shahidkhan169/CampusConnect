@@ -1,4 +1,4 @@
-import { deletePendingToken, generateToken, getStudent, loginStudent,  registerStudent, updateStudent, viewCompany, viewTokensByStudent } from "../services/student.service.js";
+import { deletePendingToken, filterStudentByYearAndCompany, generateToken, getStudent, loginStudent,  registerStudent, updateStudent, viewCompany, viewTokensByStudent } from "../services/student.service.js";
 import { BadRequest } from "../utils/errors.js";
 import { response } from 'express';
 
@@ -97,3 +97,15 @@ export const ViewCompany=async(req,res,next)=>{
         next(err);
     }
 }
+
+export const FilterAlumniByYearAndCompany=async(req,res,next)=>{
+    try{
+        const dto=req.body;
+        const response=await filterStudentByYearAndCompany(dto);
+        res.status(res.statusCode).json(response);
+    }
+    catch(err){
+        next(err);
+    }
+}
+

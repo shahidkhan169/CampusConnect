@@ -11,6 +11,7 @@ export const alumniFirstUpdateSchema=yup.object({
     firstName:yup.string().trim().required("Firstname is Required"),
     lastName:yup.string().trim().required("Lastname is Required"),
     password:yup.string().trim().min(6,"Password must atleast 6 characters"),
+    rollNo:yup.string().trim().required("Roll no id Required"),
     dob:yup.string().trim().required("Date of birth is Required"),
     passedOutYear:yup.string().trim().required("Passed Out Year is Required"),
     companyId:yup.string().required("Company is required"),

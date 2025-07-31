@@ -1,4 +1,5 @@
-import { declineTokenByAdmin, loginAlumni, scheduleTokenByAdmin,  updateAlumniAtFirst,  viewTokensByAlumni } from "../services/alumni.service.js";
+import { Admin } from "../models/admin.model.js";
+import { declineTokenByAdmin, getAlumni, loginAlumni, scheduleTokenByAdmin,  updateAlumniAtFirst,  viewTokensByAlumni } from "../services/alumni.service.js";
 import { BadRequest } from "../utils/errors.js";
 import { response } from 'express';
 
@@ -15,6 +16,17 @@ export const Login = async (req, res, next) => {
     }
 }
 
+export const GetAlumni=async(req,res,next)=>{
+    try{
+        const userId=req.userId;
+        const dto=req.body;
+        const response=await getAlumni(userId);
+        res.status(response.statusCode).json(response);
+    }
+    catch(err){
+        next(err);
+    }
+}
 
 export const UpdateAlumniAtFirst=async(req,res,next)=>{
     try{

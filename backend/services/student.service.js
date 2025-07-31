@@ -151,3 +151,17 @@ export const viewCompany=async()=>{
         "All Companies"
     )
 }
+
+
+export const filterStudentByYearAndCompany=async(dto)=>{
+    const alumnis=await Alumni.find({companyId:dto.companyId, passedOutYear:dto.year});
+    if(!alumnis)
+        throw new BadRequest("No Alumni Found");
+
+    return new GeneralResponse(
+        200,
+        true,
+        alumnis,
+        "Sorted Alumnis"
+    )
+}

@@ -1,6 +1,6 @@
 import express from 'express'
 
-import { DeclineToken, Login, ScheduleTokenByAdmin, UpdateAlumniAtFirst, ViewTokens } from '../../controller/alumni.controller.js';
+import { DeclineToken, GetAlumni, Login, ScheduleTokenByAdmin, UpdateAlumniAtFirst, ViewTokens } from '../../controller/alumni.controller.js';
 import { auth } from '../../middlewares/auth.js';
 import { declineTokenByAdmin } from '../../services/alumni.service.js';
 import { validateRequest } from './../../middlewares/ValidationRequest.js';
@@ -14,3 +14,4 @@ AlumniRouter.post("/viewTokens",auth,ViewTokens);
 AlumniRouter.post("/scheduleToken/:studentId/:tokenId",auth,ScheduleTokenByAdmin);
 AlumniRouter.delete("/declineToken/:tokenId",auth,DeclineToken)
 AlumniRouter.patch("/updateAlumniFirst",validateRequest(alumniFirstUpdateSchema),auth,UpdateAlumniAtFirst);
+AlumniRouter.get("/getAlumni",auth,GetAlumni);
