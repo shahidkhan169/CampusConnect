@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import image from '../assets/login.jpg';
-import { axiosClient } from '../AxiosClient/AxiosClinent';
+import { BackendClient } from '../AxiosClient/BackendClient';
 import { useNavigate } from 'react-router-dom'
 import LoginFailed from '../Components/LoginFailed';
 
@@ -21,7 +21,7 @@ const authFuntion = async (e) => {
   try {
     if (role === "student") {
       console.log("API triggered");
-      const res = await axiosClient.post("student/loginStudent", { email, password });
+      const res = await BackendClient.post("student/loginStudent", { email, password });
 
       if (res.status === 200) {
         // navigate('/student/home');
@@ -116,6 +116,7 @@ const authFuntion = async (e) => {
               <input
                 id="email"
                 type="email"
+                required
                 onChange={(e) => { setEmail(e.target.value) }}
                 className="w-full px-4 py-3 bg-white border-0 border-b-2 border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-rose-500 focus:border-rose-500 transition duration-200 ease-in-out"
                 placeholder="your.email@kongu.edu"
@@ -135,6 +136,7 @@ const authFuntion = async (e) => {
               <input
                 id="password"
                 type="password"
+                required
                 onChange={(e) => { setPassword(e.target.value) }}
                 className="w-full px-4 py-3 bg-white border-0 border-b-2 border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:border-rose-500 transition duration-200 ease-in-out"
                 placeholder="••••••••"

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import NavbarStudent from '../Components/NavbarStudent';
-import { axiosClient } from '../AxiosClient/AxiosClinent';
+import { BackendClient} from '../AxiosClient/BackendClient';
 
 const HomePage = () => {
   const [firstName, setFirstName] = useState("");
@@ -11,12 +11,13 @@ const HomePage = () => {
   useEffect(() => {
     const fetch = async () => {
       try {
-        const companyResponse = await axiosClient.get("student/getCompanies");
-        const response = await axiosClient.get("student/getStudent", {
+        const companyResponse = await BackendClient.get("student/getCompanies");
+        const response = await BackendClient.get("student/getStudent", {
           headers: {
             Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4OGI2ODJmYzM0ZjY2MjI2MDJhMzUwZiIsImlhdCI6MTc1Mzk3NDM1OX0.TeNWxEXKXst_dRpqYGQOiMCfsdZxtDbqSoqY1IyoQAM"
           }
         });
+        console.log(response);
 
         setFirstName(response.data.data.firstName);
         setLastName(response.data.data.lastName);
@@ -79,37 +80,31 @@ const HomePage = () => {
 
         {/* Company Cards */}
         <div className="mb-10">
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-            {companies.map(company => {
-              const logoBase64 = `data:${company.companyImg.contentType};base64,${btoa(
-                new Uint8Array(company.companyImg.data.data).reduce((data, byte) => data + String.fromCharCode(byte), '')
-              )}`;
-
-              return (
-                <div
-                  key={company._id}
-                  className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-all duration-300 cursor-pointer transform hover:-translate-y-1"
-                  onClick={() => handleCompanyClick(company._id)}
-                >
-                  <div className="relative h-36">
-                    <img
-                      src={logoBase64}
-                      alt={company.companyName}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent">
-                      <div className="relative">
-                        <div className="absolute inset-0 bg-white/20 backdrop-blur-sm rounded-lg"></div>
-                        <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-3/4 h-1 bg-gradient-to-r from-transparent via-white/30 to-transparent rounded-full"></div>
-                        <h3 className="text-sm font-semibold text-white relative z-10 text-center truncate px-2 py-1">
-                          {company.companyName}
-                        </h3>
-                      </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 gap-7">
+            {companies.map(company => (
+              <div
+                key={company._id}
+                className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-all duration-300 cursor-pointer transform hover:-translate-y-1"
+                onClick={() => handleCompanyClick(company._id)}
+              >
+                <div className="relative h-36">
+                  <img
+                    src={company.companyImg.data} 
+                    alt={company.companyName}
+                    className="w-full h-full object-contain"
+                  />
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent">
+                    <div className="relative">
+                      <div className="absolute inset-0 bg-white/20 backdrop-blur-sm rounded-lg"></div>
+                      <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-3/4 h-1 bg-gradient-to-r from-transparent via-white/30 to-transparent rounded-full"></div>
+                      <h3 className="text-sm font-semibold text-white relative z-10 text-center truncate px-2 py-1">
+                        {company.companyName.toUpperCase()}
+                      </h3>
                     </div>
                   </div>
                 </div>
-              );
-            })}
+              </div>
+            ))}
           </div>
         </div>
 
