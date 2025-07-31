@@ -1,5 +1,6 @@
-import express from 'express'
+import express from 'express';
 import helmet from 'helmet';
+import cors from 'cors';
 import { router } from './routers/index.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import { morganLogger } from './utils/morgan.js';
@@ -8,6 +9,7 @@ import { morganLogger } from './utils/morgan.js';
 
 export const app=express();
 
+app.use(cors())
 app.use(helmet())
 app.use(express.json());
 
