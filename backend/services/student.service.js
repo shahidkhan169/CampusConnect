@@ -6,6 +6,7 @@ import { GeneralResponse } from "../utils/GeneralResponse.js";
 import { Student } from './../models/student.model.js';
 import bcrypt from "bcryptjs";
 import jwt from 'jsonwebtoken';
+import { Company } from './../models/company.model.js';
 
 
 export const registerStudent = async (dto) => {
@@ -137,5 +138,16 @@ export const deletePendingToken=async(id,tokenId)=>{
         200,
         deleteToken,
         `Token sent to ${alumni.firstName} ${alumni.lastName} has been deleted`
+    )
+}
+
+
+export const viewCompany=async()=>{
+    const companies=await Company.find();
+    return new GeneralResponse(
+        200,
+        true,
+        companies,
+        "All Companies"
     )
 }

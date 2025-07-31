@@ -1,4 +1,4 @@
-import { deletePendingToken, generateToken, getStudent, loginStudent,  registerStudent, updateStudent, viewTokensByStudent } from "../services/student.service.js";
+import { deletePendingToken, generateToken, getStudent, loginStudent,  registerStudent, updateStudent, viewCompany, viewTokensByStudent } from "../services/student.service.js";
 import { BadRequest } from "../utils/errors.js";
 import { response } from 'express';
 
@@ -85,5 +85,15 @@ export const GetStudent=async(req,res,next)=>{
     }
     catch(err){
         next(err)
+    }
+}
+
+export const ViewCompany=async(req,res,next)=>{
+    try{
+        const response=await viewCompany();
+        res.status(res.statusCode).json(response);
+    }
+    catch(err){
+        next(err);
     }
 }
