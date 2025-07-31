@@ -6,7 +6,7 @@ export const errorHandler = (err, req, res, next) => {
             status: "Error",
             statusCode: err.getCode(),
             message: err.message,
-            details: err.details || null
+            errors: err.errors || null
         });
     }
 

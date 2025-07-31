@@ -14,6 +14,17 @@ const roundDescSchema = new mongoose.Schema({
     }
 });
 
+const profiles=new mongoose.Schema({
+    name:{
+        type:String,
+        required:true
+    },
+    link:{
+        type:String,
+        required:true
+    }
+})
+
 const alumniSchema = new mongoose.Schema({
     firstName: {
         type: String,
@@ -35,6 +46,9 @@ const alumniSchema = new mongoose.Schema({
     dob: {
         type: Date,
     },
+    passedOutYear:{
+        type:String,
+    },
     companyId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: COMPANY_MODEL
@@ -43,14 +57,28 @@ const alumniSchema = new mongoose.Schema({
         type:String,
         trim:true
     },
+    salaryPackage:{
+        type:String
+    },
     file: {
         data: Buffer,
         contentType: String,
         fileName: String
     },
-    rounds: [roundDescSchema],
+    rounds: {
+      type:[roundDescSchema],
+      default:[]
+    },
     generalDesc: {
         type: String,
+    },
+    socialMediaProfiles:{
+        type:[profiles],
+        default:[]
+    },
+    maxToken:{
+        type:Number,
+        default:10
     },
     active:{
         type:Boolean,

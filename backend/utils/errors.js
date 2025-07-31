@@ -16,9 +16,9 @@ export class GeneralError extends Error {
 }
 
 export class BadRequest extends GeneralError {
-    constructor(message, details = {}) {
+    constructor(message, errors = {}) {
         super(message);
-        this.details = details;
+        this.errors = errors;
     }
 }
 

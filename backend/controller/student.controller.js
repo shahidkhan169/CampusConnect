@@ -1,18 +1,12 @@
-import { LoginDto, sRegisterDto, TokenDto, UpdateStudentDto } from "../dtos/student.dto.js";
-import { generateToken, loginStudent, registerStudent, updateStudent } from "../services/student.service.js";
+import { deletePendingToken, generateToken, getStudent, loginStudent,  registerStudent, updateStudent, viewTokensByStudent } from "../services/student.service.js";
 import { BadRequest } from "../utils/errors.js";
-import { GeneralResponse } from "../utils/GeneralResponse.js";
+import { response } from 'express';
 
 
 
 export const Register = async (req, res, next) => {
     try {
-        const dto = new sRegisterDto(req.body);
-        const errors = dto.isValid();
-
-        if (Object.keys(errors).length > 0)
-            throw new BadRequest("Validation Erorr", errors);
-
+        const dto =req.body;
         const response = await registerStudent(dto);
         res.status(response.statusCode).json(response)
     }
@@ -23,12 +17,7 @@ export const Register = async (req, res, next) => {
 
 export const Login = async (req, res, next) => {
     try {
-        const dto = new LoginDto(req.body);
-        const errors = dto.isValid()
-
-        if (Object.keys(errors).length > 0)
-            throw new BadRequest("Validation Error", errors);
-
+        const dto = req.body;
         const response = await loginStudent(dto);
         res.status(200).json(response);
 
@@ -41,11 +30,7 @@ export const Login = async (req, res, next) => {
 export const Update = async (req, res, next) => {
     try {
         const userId = req.userId;
-        const dto = UpdateStudentDto.sanitize(req.body);
-        const errors = dto.isValid();
-
-        if (Object.keys(errors).length > 0)
-            throw new BadRequest("Update Validation Error", errors);
+        const dto = req.body;
 
         const response = await updateStudent(userId, dto);
         res.status(200).json(response);
@@ -58,16 +43,47 @@ export const Update = async (req, res, next) => {
 export const GenerateToken = async (req, res, next) => {
     try {
         const userId = req.userId;
-        const { adminId } = req.params;
-        const dto = new TokenDto(req.body);
-        const errors = dto.isValid();
-
-        if (Object.keys(dto) > 0)
-            throw new BadRequest("Validation Error", errors);
-
-        const savedToken = new generateToken(userId, adminId, sto)
+        const { alumniId } = req.params;
+        const dto = req.body;
+        const response = await generateToken(userId, alumniId, dto)
+        res.status(response.statusCode).json(response);
     }
     catch (err) {
         next(err);
+    }
+}
+
+export const ViewTokens = async (req, res, next) => {
+    try {
+        const userId = req.userId;
+        const { responseStatus } = req.body;
+        const respone = await viewTokensByStudent(userId, responseStatus);
+        res.status(respone.statusCode).json(respone);
+    }
+    catch (err) {
+        next(err);
+    }
+}
+
+export const DeleteToken=async(req,res,next)=>{
+    try{
+        const userId=req.userId;
+        const tokenId=req.params.tokenId;
+        const response=await deletePendingToken(userId,tokenId);
+        res.status(response.statusCode).json(response);
+    }
+    catch(err){
+        next(err)
+    }
+}
+
+export const GetStudent=async(req,res,next)=>{
+    try{
+        const userId=req.userId;
+        const response=await getStudent(userId);
+        res.status(response.statusCode).json(response);
+    }
+    catch(err){
+        next(err)
     }
 }

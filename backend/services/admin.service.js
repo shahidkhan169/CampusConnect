@@ -7,6 +7,9 @@ import bcrypt from "bcryptjs";
 import jwt from 'jsonwebtoken';
 import { INVITE_TEMPLATE } from './../constants/emailTemplate.constants.js';
 import { GeneralResponse } from "../utils/GeneralResponse.js";
+import { STATUS } from "../constants/status.constants.js";
+import { Company } from "../models/company.model.js";
+import { toCamelCase } from "../utils/toCamelCase.js";
 
 
 export const registerAdmin = async (dto) => {
@@ -65,11 +68,52 @@ export const InvitationService = {
     }
 };
 
-export const updateInvitation = async (invitationId) => {
-    const exists=new Invitation.findById(invitationId);
+export const updateInvitation= async (invitationId) => {
+    const exists=await Invitation.findById(invitationId);
     if(!exists)
         throw new BadRequest("Invitation Not Found");
+    const updatedInvitation=await Invitation.findByIdAndUpdate(invitationId,{status:STATUS.ACCEPTED,acceptedAt:Date.now()},{
+        new:true,
+        runValidators:true
+    });
 
-    
+    const dto={
+        email:updatedInvitation.email,
+    }
+    return dto;
 }
         
+export const createAlumni=async(dto)=>{
+    const existing=await Alumni.findOne({email:dto.email});
+    if(existing)
+        throw new BadRequest("User Already Exists");
+    const newAlumni=new Alumni(dto);
+    const savedAlumni=await newAlumni.save();
+    return new GeneralResponse(
+        true,
+        201,
+        savedAlumni,
+        "Alumni Created Successfully"
+    )
+}
+
+export const addCompany=async(dto)=>{
+    
+    let _companyName=toCamelCase(dto.companyName);
+    const exists=await Company.findOne({companyName:_companyName});
+    if(exists)
+        throw new BadRequest("Company Already Exists");
+
+    const company=new Company({
+        companyName:_companyName,
+        companyImg:dto.companyImg
+    })
+    await company.save();
+
+    return new GeneralResponse(
+        true,
+        200,
+        company,
+        "Company Added Successfully"
+    )
+}

@@ -1,149 +1,91 @@
-import { isEmail, isMobilePhone } from 'class-validator';
-import { PHONEREGEXP, EMAILREGEXP } from '../constants/regEx.constants.js';
-
-export class sRegisterDto {
-    constructor(data) {
-        this.firstName = data.firstName;
-        this.lastName = data.lastName;
-        this.rollNo = data.rollNo;
-        this.program = data.program;
-        this.branch = data.branch;
-        this.semester = data.semester;
-        this.phoneNumber = data.phoneNumber;
-        this.email = data.email;
-        this.password = data.password;
-    }
-
-    isValid() {
-        const errors = {};
-
-        if (!this.firstName) errors.firstName = "First name is required";
-        if (!this.lastName) errors.lastName = "Last name is required";
-        if (!this.rollNo) errors.rollNo = "Roll No is required";
-        if (!this.program) errors.program = "Program is required";
-        if (!this.branch) errors.branch = "Branch is required";
-        if (!this.semester) errors.semester = "Semester is required";
-
-        if (
-            !this.phoneNumber ||
-            !isMobilePhone(this.phoneNumber, "en-IN") ||
-            !PHONEREGEXP.test(this.phoneNumber)
-        ) {
-            errors.phoneNumber = "Invalid phone number";
-        }
-
-        if (
-            !this.email ||
-            !isEmail(this.email) ||
-            !EMAILREGEXP.test(this.email)
-        ) {
-            errors.email = "Invalid email";
-        }
-
-        if (!this.password || this.password.length < 6) {
-            errors.password = "Password should be at least 6 characters";
-        }
-
-        return errors;
-    }
-}
+import * as yup from "yup";
+import { PHONEREGEXP, EMAILREGEXP } from "../constants/regEx.constants.js";
 
 
-export class LoginDto {
-    constructor(data) {
-        this.email = data.email;
-        this.password = data.password;
-    }
+export const studentRegisterSchema= yup.object({
+  firstName: yup
+    .string()
+    .trim()
+    .required("First name is required"),
 
-    isValid() {
-        const errors = {}
+  lastName: yup
+    .string()
+    .trim()
+    .required("Last name is required"),
 
-        if (!this.email || !EMAILREGEXP.test(this.email)) {
-            errors.email = "Invalid email";
-        }
+  rollNo: yup
+    .string()
+    .trim()
+    .required("Roll No is required"),
 
-        if (!this.password) {
-            errors.password = "Password is required";
-        }
-        return errors;
-    }
-}
+  program: yup
+    .string()
+    .trim()
+    .required("Program is required"),
+
+  branch: yup
+    .string()
+    .trim()
+    .required("Branch is required"),
+
+  semester: yup
+    .string()
+    .trim()
+    .required("Semester is required"),
+
+  phoneNumber: yup
+    .string()
+    .matches(PHONEREGEXP, "Invalid phone number")
+    .required("Phone number is required"),
+
+  email: yup
+    .string()
+    .email("Invalid email format")
+    .matches(EMAILREGEXP, "Invalid email")
+    .required("Email is required"),
+
+  password: yup
+    .string()
+    .min(6, "Password should be at least 6 characters")
+    .required("Password is required"),
+});
 
 
-export class UpdateStudentDto {
-    constructor(data) {
-        this.firstName = data.firstName;
-        this.lastName = data.lastName;
-        this.semester = data.semester;
-        this.phoneNumber = data.phoneNumber;
-        this.password = data.password;
-    }
+export const LoginSchema = yup.object({
+  email: yup
+    .string()
+    .email("Invalid email")
+    .matches(EMAILREGEXP, "Invalid email")
+    .required("Email is required"),
 
-    static sanitize(data) {
-        const allowedFields = [
-            'firstName',
-            'lastName',
-            'semester',
-            'phoneNumber',
-            'password',
-        ];
+  password: yup
+    .string()
+    .required("Password is required"),
+});
 
-        const sanitized = {};
-        for (const key of allowedFields) {
-            if (data[key] !== undefined) {
-                sanitized[key] = data[key];
-            }
-        }
-        return new UpdateStudentDto(sanitized);
-    }
-    isValid() {
-        const errors = {};
 
-        if (this.password !== undefined && this.password.length < 6) {
-            errors.password = "Password must be at least 6 characters";
-        }
+export const studentUpdateSchema = yup.object({
+  firstName: yup.string().trim().optional(),
+  lastName: yup.string().trim().optional(),
+  semester: yup.string().trim().optional(),
+  phoneNumber: yup
+    .string()
+    .matches(PHONEREGEXP, "Invalid phone number")
+    .optional(),
+  password: yup
+    .string()
+    .min(6, "Password must be at least 6 characters")
+    .optional(),
+});
 
-        if (this.firstName !== undefined && this.firstName.trim() === "") {
-            errors.firstName = "First name is required";
-        }
+export const tokenSchema = yup.object({
+  mode: yup
+    .string()
+    .oneOf(["Telephonic", "Chat"], "Invalid mode")
+    .required("Mode is required"),
 
-        if (this.lastName !== undefined && this.lastName.trim() === "") {
-            errors.lastName = "Last name is required";
-        }
-
-        if (this.phoneNumber !== undefined) {
-            if (
-                !isMobilePhone(this.phoneNumber, "en-IN") ||
-                !PHONEREGEXP.test(this.phoneNumber)
-            ) {
-                errors.phoneNumber = "Invalid phone number";
-            }
-        }
-
-        return errors;
-    }
-}
-
-export class TokenDto{
-    constructor(data){
-        this.mode=data.mode;
-        this.reason=data.reason;
-    }
-    isValid(){
-        const errors={}
-
-        if(!this.mode)
-            errors.mode="Communication mode is required";
-        
-        if(!this.reason)
-            errors.mode="Reason of Communication is required";
-
-        return errors;
-    }
-}
-
-export class EnterAlumniDetails{
-    constructor(data){
-        
-    }
-}
+  reason: yup
+    .string()
+    .min(10, "Reason must be at least 10 characters")
+    .required("Reason is required"),
+});

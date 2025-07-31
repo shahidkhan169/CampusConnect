@@ -1,13 +1,13 @@
 import mongoose from "mongoose";
-import { ADMIN_MODEL, STUDENT_MODEL, TOKEN_MODEL } from "../constants/model.constants.js";
+import { ADMIN_MODEL, ALUMNI_MODEL, STUDENT_MODEL, TOKEN_MODEL } from "../constants/model.constants.js";
 import { MODE, STATUS } from "../constants/status.constants.js";
 import { response } from "express";
 
 
 const tokenSchema=new mongoose.Schema({
-    adminId:{
+    alumniId:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:ADMIN_MODEL,
+        ref:ALUMNI_MODEL,
         required:true
     },
     studentId:{
