@@ -20,7 +20,7 @@ export const UpdateAlumniAtFirst=async(req,res,next)=>{
     try{
         const userId=req.userId;
         const dto=req.body;
-        const response=await updateAlumniAtFirst(dto);
+        const response=await updateAlumniAtFirst(userId,dto);
         res.status(response.statusCode).json(response);
     }
     catch(err){

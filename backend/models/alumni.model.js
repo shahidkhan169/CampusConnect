@@ -61,7 +61,7 @@ const alumniSchema = new mongoose.Schema({
         type:String
     },
     file: {
-        data: Buffer,
+        data: String,
         contentType: String,
         fileName: String
     },

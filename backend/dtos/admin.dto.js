@@ -10,13 +10,12 @@ export const adminRegisterSchema=yup.object({
 })
 
 export const addCompanySchema=yup.object({
-    companyName:yup.string().trim().required("Company Name is Required"),
+    companyName:yup.string().required("Company Name is Required"),
     companyImg:yup.object({
             data:yup.mixed().required("File data is required"),
             contentType: yup
             .string()
-            .trim()
             .required("Content type is required")
             .matches(FILEREGEXP, "Only png, jpg, jpeg, files are allowed"),
-        }),
+        })
 })
