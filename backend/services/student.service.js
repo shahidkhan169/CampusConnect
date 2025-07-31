@@ -41,7 +41,7 @@ export const loginStudent = async (dto) => {
     return new GeneralResponse(
         true,
         200,
-        token,
+        {token:token},
         "Login Successful"
     )
 }
