@@ -1,7 +1,40 @@
-import React from 'react';
+import React, { useState } from 'react';
 import image from '../assets/login.jpg';
+import { axiosClient } from '../AxiosClient/AxiosClinent';
+import { useNavigate } from 'react-router-dom'
+import LoginFailed from '../Components/LoginFailed';
 
 function Login() {
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [role, setRole] = useState("student");
+  const [error,setError]=useState(false);
+  const navigate = useNavigate();
+  console.log(email);
+  console.log(password);
+  
+  console.log(role);
+
+const authFuntion = async (e) => {
+  e.preventDefault();
+  try {
+    if (role === "student") {
+      console.log("API triggered");
+      const res = await axiosClient.post("student/loginStudent", { email, password });
+
+      if (res.status === 200) {
+        // navigate('/student/home');
+        console.log(res);
+      }
+    }
+  } catch (e) {
+    console.error("Login error:", e);
+    setError(true);
+  }
+};
+
+
   return (
     <div className="h-screen w-screen flex overflow-hidden bg-white">
       {/* Left Side: Hero Image with Overlay */}
@@ -53,6 +86,7 @@ function Login() {
                     type="radio"
                     name="role"
                     defaultChecked
+                    onChange={() => { setRole("student") }}
                     className="h-4 w-4 text-rose-600 focus:ring-rose-500 border-gray-300"
                   />
                   <label htmlFor="student" className="ml-2 block text-sm text-gray-700">
@@ -64,6 +98,7 @@ function Login() {
                     id="alumni"
                     type="radio"
                     name="role"
+                    onChange={() => { setRole("alumini") }}
                     className="h-4 w-4 text-rose-600 focus:ring-rose-500 border-gray-300"
                   />
                   <label htmlFor="alumni" className="ml-2 block text-sm text-gray-700">
@@ -81,6 +116,7 @@ function Login() {
               <input
                 id="email"
                 type="email"
+                onChange={(e) => { setEmail(e.target.value) }}
                 className="w-full px-4 py-3 bg-white border-0 border-b-2 border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-rose-500 focus:border-rose-500 transition duration-200 ease-in-out"
                 placeholder="your.email@kongu.edu"
               />
@@ -99,6 +135,7 @@ function Login() {
               <input
                 id="password"
                 type="password"
+                onChange={(e) => { setPassword(e.target.value) }}
                 className="w-full px-4 py-3 bg-white border-0 border-b-2 border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:border-rose-500 transition duration-200 ease-in-out"
                 placeholder="••••••••"
               />
@@ -107,13 +144,13 @@ function Login() {
             {/* Submit Button */}
             <button
               type="submit"
+              onClick={authFuntion}
               className="w-full py-3 px-4 bg-gradient-to-r from-rose-500 to-orange-500 text-white font-semibold rounded-lg shadow-md hover:from-rose-600 hover:to-orange-600 focus:outline-none focus:ring-4 focus:ring-rose-300 transform transition hover:scale-[1.02] duration-200"
             >
               Log In
             </button>
           </form>
-
-          {/* Footer Note */}
+{error && <LoginFailed duration={3000} onClose={() => setError(false)} />}
           <p className="mt-8 text-xs text-center text-gray-400">
             Secure login • Your data stays private
           </p>

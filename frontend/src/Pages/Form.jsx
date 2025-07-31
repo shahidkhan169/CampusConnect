@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 const Form = () => {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
-    email: 'student@example.com',
+    email: 'student@example',
     password: '',
     confirmPassword: '',
     firstName: '',
@@ -142,7 +142,7 @@ const Form = () => {
 
   const getDisplayText = () => {
     switch (step) {
-      case 1: return formData.email || 'Email';
+      case 1: return  'Go ahead !';
       case 2: return formData.firstName || 'Personal Info';
       case 3: return `${formData.firstName} ${formData.lastName}` || 'Professional Info';
       case 4: return `${formData.firstName} ${formData.lastName}` || 'Interview Experience';

@@ -1,7 +1,8 @@
-import React from 'react';
+import React from 'react'
 
-function Navbar() {
-    return (
+function NavbarAlumini() {
+  return (
+    <div>
         <div className="fixed w-64 h-screen bg-gradient-to-b from-slate-800 via-slate-900 to-slate-900 text-white p-5 shadow-2xl overflow-y-auto z-50">
             {/* Logo Section */}
             <div className="mb-8 pt-4">
@@ -52,7 +53,7 @@ function Navbar() {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
                     </div>
-                    <span className="font-medium text-gray-300 group-hover:text-white">Events</span>
+                    <span className="font-medium text-gray-300 group-hover:text-white">Announcement</span>
                 </div>
 
                 <div className="flex items-center p-3 rounded-lg hover:bg-slate-700/50 backdrop-blur-sm border border-transparent hover:border-slate-600/30 cursor-pointer transition-all duration-200 group mt-10">
@@ -78,7 +79,9 @@ function Navbar() {
                 </div>
             </div>
         </div>
-    );
+
+    </div>
+  )
 }
 
-export default Navbar;
+export default NavbarAlumini
