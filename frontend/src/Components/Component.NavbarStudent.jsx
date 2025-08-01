@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { authContext} from '../Context/AuthContext';
 
 
 
-function NavbarStudent({firstName,lastName,departmant}) {
+function NavbarStudent() {
+    const {firstName,lastName,branch}=useContext(authContext)
     const navigate=useNavigate();
     return (
         <div className="fixed w-64 h-screen bg-gradient-to-b from-slate-800 via-slate-900 to-slate-900 text-white p-5 shadow-2xl overflow-y-auto z-50">
@@ -77,7 +79,7 @@ function NavbarStudent({firstName,lastName,departmant}) {
                     </div>
                     <div className="ml-3">
                         <p className="text-sm font-medium text-gray-100">{firstName} {lastName}</p>
-                        <p className="text-xs text-gray-400">{departmant    }</p>
+                        <p className="text-xs text-gray-400">{branch}</p>
                     </div>
                 </div>
             </div>

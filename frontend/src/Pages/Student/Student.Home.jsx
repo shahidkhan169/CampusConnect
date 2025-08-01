@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import NavbarStudent from '../Components/NavbarStudent';
-import { BackendClient} from '../AxiosClient/BackendClient';
+import { useContext, useEffect, useState } from 'react';
+import { BackendClient} from '../../AxiosClient/BackendClient';
+import NavbarStudent from '../../Components/Component.NavbarStudent';
+import Spinner from '../../Components/Component.Spinner';
+import { authContext } from '../../Context/AuthContext';
 
 const HomePage = () => {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [branch, setBranch] = useState("");
+  const{firstName,setFirstName,lastName,setLastName,token,branch,setBranch}=useContext(authContext);
   const [companies, setCompanies] = useState([]);
+  const [loading, setLoading]=useState(true);
 
   useEffect(() => {
     const fetch = async () => {
@@ -14,15 +15,17 @@ const HomePage = () => {
         const companyResponse = await BackendClient.get("student/getCompanies");
         const response = await BackendClient.get("student/getStudent", {
           headers: {
-            Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4OGI2ODJmYzM0ZjY2MjI2MDJhMzUwZiIsImlhdCI6MTc1Mzk3NDM1OX0.TeNWxEXKXst_dRpqYGQOiMCfsdZxtDbqSoqY1IyoQAM"
+            Authorization: `Bearer ${token}`
           }
         });
-        console.log(response);
-
         setFirstName(response.data.data.firstName);
         setLastName(response.data.data.lastName);
         setBranch(response.data.data.branch);
         setCompanies(companyResponse.data.data);
+        localStorage.setItem("firstName",response.data.data.firstName);
+        localStorage.setItem("lastName",response.data.data.lastName);
+        localStorage.setItem("branch",response.data.data.branch);
+        setLoading(false)
       } catch (e) {
         console.error(e);
       }
@@ -37,7 +40,8 @@ const HomePage = () => {
   return (
     <div className="flex min-h-screen bg-gray-50">
       <NavbarStudent firstName={firstName} lastName={lastName} departmant={branch} />
-
+      {/* Conditional render */}
+      {loading ? (<Spinner/>):(
       <div className="ml-64 flex-1 p-8 overflow-y-auto">
         {/* Welcome Section */}
         <div className="bg-white rounded-xl shadow-sm p-6 mb-8">
@@ -138,7 +142,8 @@ const HomePage = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div>)}
+ 
     </div>
   );
 };
