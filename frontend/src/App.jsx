@@ -15,7 +15,7 @@
           <Route path='/student/home' element={<HomePage/>}/>
           <Route path='/student/profile' element={<StudentProfile/>}/>
           <Route path='/admin/home' element={<AdminHome/>}/>
-          <Route path="/temp" element={<StudentCompanyProfile/>}/>
+          {/* <Route path="/temp" element={<StudentCompanyProfile/>}/> */}
         </Routes>
       </BrowserRouter>
       </AuthProvider>

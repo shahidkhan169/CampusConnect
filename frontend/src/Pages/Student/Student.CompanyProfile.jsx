@@ -1,15 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react';
-import NavbarStudent from '../../Components/Component.NavbarStudent';
 import { authContext } from '../../Context/AuthContext';
 import { BackendClient } from '../../AxiosClient/BackendClient';
 
-const StudentCompanyProfile = () => {
+const StudentCompanyProfile = ({companyId}) => {
   const { token } = useContext(authContext);
   const [alumniData, setAlumniData] = useState([]);
   const [company, setCompany] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const companyId = "688b9d248084bea9fd52c6f0"; // Can be passed via URL later
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 6 }, (_, i) => currentYear - i);
   const [selectedYear, setSelectedYear] = useState(currentYear);
@@ -162,7 +160,6 @@ const StudentCompanyProfile = () => {
   if (!company && loading) {
     return (
       <div className="flex min-h-screen bg-gray-50">
-        <NavbarStudent />
         <main className="ml-64 flex-1 p-8">Loading company info...</main>
       </div>
     );
@@ -170,7 +167,6 @@ const StudentCompanyProfile = () => {
 
   return (
     <div className="flex min-h-screen bg-gray-50 text-gray-800">
-      <NavbarStudent />
 
       {/* Main Content */}
       <main className="ml-64 flex-1 p-8 overflow-y-auto">

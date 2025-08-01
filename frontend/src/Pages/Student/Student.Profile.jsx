@@ -35,7 +35,7 @@ const TokenIcon = () => (
   </svg>
 );
 
-const ProfilePage = () => {
+const StudentProfile = () => {
   const [student, setStudent] = useState(null);
   const [loading, setLoading] = useState(true);
   const {token}=useContext(authContext);
@@ -64,7 +64,6 @@ const ProfilePage = () => {
   if (loading) {
     return (
       <div className="flex min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
-        <NavbarStudent firstName="Loading..." lastName="" department="" />
         <div className="ml-64 flex-1 p-8 flex items-center justify-center">
           <div className="animate-pulse text-gray-500">Loading your profile...</div>
         </div>
@@ -75,11 +74,6 @@ const ProfilePage = () => {
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
       {/* Sidebar Navbar */}
-      <NavbarStudent
-        firstName={student.firstName}
-        lastName={student.lastName}
-        department={student.branch}
-      />
 
       {/* Main Content */}
       <main className="ml-64 flex-1 p-6 md:p-8 lg:p-10 overflow-y-auto">
@@ -213,4 +207,4 @@ const ProfilePage = () => {
   );
 };
 
-export default ProfilePage;
+export default StudentProfile;
