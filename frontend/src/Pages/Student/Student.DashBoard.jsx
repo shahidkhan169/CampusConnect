@@ -4,7 +4,7 @@ import NavbarStudent from '../../Components/Component.NavbarStudent';
 import Spinner from '../../Components/Component.Spinner';
 import { authContext } from '../../Context/AuthContext';
 
-const HomePage = () => {
+const StudentDashboard = () => {
   const{firstName,setFirstName,lastName,setLastName,token,branch,setBranch}=useContext(authContext);
   const [companies, setCompanies] = useState([]);
   const [loading, setLoading]=useState(true);
@@ -39,7 +39,6 @@ const HomePage = () => {
 
   return (
     <div className="flex min-h-screen bg-gray-50">
-      <NavbarStudent/>
       {/* Conditional render */}
       {loading ? (<Spinner/>):(
       <div className="ml-64 flex-1 p-8 overflow-y-auto">
@@ -148,4 +147,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default StudentDashboard;
