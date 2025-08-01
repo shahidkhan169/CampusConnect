@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import image from '../assets/login.jpg';
 import { BackendClient } from '../AxiosClient/BackendClient';
 import { useNavigate } from 'react-router-dom'
-import LoginFailed from '../Components/LoginFailed';
+import LoginFailed from '../Components/Component.LoginFailed';
+import { authContext } from '../Context/AuthContext';
 
 function Login() {
 
@@ -24,8 +25,10 @@ const authFuntion = async (e) => {
       const res = await BackendClient.post("student/loginStudent", { email, password });
 
       if (res.status === 200) {
-        // navigate('/student/home');
+        navigate('/student/home');
         console.log(res);
+        localStorage.setItem("token",res.data.data.token);
+
       }
     }
   } catch (e) {

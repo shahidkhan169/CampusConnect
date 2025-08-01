@@ -1,10 +1,11 @@
 import React from 'react'
-import LoginFailed from './Components/LoginFailed'
-import AdminHome from './Pages/Admin/AdminHome'
+import AdminHome from './Pages/Admin/Admin.Home'
+import Spinner from './Components/Component.Spinner'
+import StudentCompanyProfile from './Pages/Student/Student.CompanyProfile'
 
 function Temp() {
   return (
-    <div><AdminHome/></div>
+    <div><StudentCompanyProfile/></div>
   )
 }
 

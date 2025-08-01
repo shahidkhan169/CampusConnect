@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import NavbarStudent from '../../Components/NavbarStudent';
+import React, { useContext, useEffect, useState } from 'react';
+import NavbarStudent from '../../Components/Component.NavbarStudent';
 import { BackendClient } from '../../AxiosClient/BackendClient';
+import { authContext } from '../../Context/AuthContext';
 
 const EmailIcon = () => (
   <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -37,13 +38,14 @@ const TokenIcon = () => (
 const ProfilePage = () => {
   const [student, setStudent] = useState(null);
   const [loading, setLoading] = useState(true);
+  const {token}=useContext(authContext);
 
   useEffect(() => {
     const fetchStudentData = async () => {
       try {
         const response = await BackendClient.get("student/getStudent", {
           headers: {
-            Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4OGI2ODJmYzM0ZjY2MjI2MDJhMzUwZiIsImlhdCI6MTc1Mzk3NDM1OX0.TeNWxEXKXst_dRpqYGQOiMCfsdZxtDbqSoqY1IyoQAM"
+            Authorization: `Bearer ${token}`
           }
         });
 

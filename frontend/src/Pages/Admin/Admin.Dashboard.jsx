@@ -1,10 +1,10 @@
 // src/Pages/AdminDashboard.js
 
 import React, { useEffect, useState } from 'react';
-import NavbarAdmin from '../../Components/NavbarAdmin';
+import NavbarAdmin from '../../Components/Component.NavbarAdmin';
 import { BackendClient } from '../../AxiosClient/BackendClient';
-import AddCompanyModal from './AdminModel/AddCompanyModel';
-import InviteAlumniModal from './AdminModel/AddAluminiModal'; // Make sure path is correct
+import AddCompanyModal from './AdminModel/AddCompany.Model';
+import InviteAlumniModal from './AdminModel/AddAlumini.Modal';
 
 // Icons (inline SVGs)
 const CompanyIcon = () => (
@@ -56,7 +56,7 @@ const AdminDashboard = () => {
         const [companiesRes, alumniRes, studentsRes, eventsRes] = await Promise.all([
           BackendClient.get("/admin/companies/count", {
             headers: {
-              Authorization: "Bearer YOUR_ADMIN_TOKEN_HERE", // Replace dynamically if possible
+              Authorization: "Bearer YOUR_ADMIN_TOKEN_HERE",
             },
           }),
           BackendClient.get("/admin/alumni/count", {

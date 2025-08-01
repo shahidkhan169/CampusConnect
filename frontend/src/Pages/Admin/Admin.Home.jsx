@@ -1,5 +1,5 @@
-import NavbarAdmin from '../../Components/NavbarAdmin';
-import AdminDashboard from './AdminDashBoard';
+import NavbarAdmin from '../../Components/Component.NavbarAdmin';
+import AdminDashboard from './Admin.Dashboard';
 
 function AdminHome() {
   return (
