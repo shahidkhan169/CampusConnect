@@ -1,12 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react';
+import NavbarStudent from '../../Components/Component.NavbarStudent';
 import { authContext } from '../../Context/AuthContext';
 import { BackendClient } from '../../AxiosClient/BackendClient';
 
-const StudentCompanyProfile = ({companyId}) => {
+const StudentCompanyProfile = ({ companyId }) => {
   const { token } = useContext(authContext);
   const [alumniData, setAlumniData] = useState([]);
   const [company, setCompany] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [contactMode, setContactMode] = useState('');
 
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 6 }, (_, i) => currentYear - i);
@@ -16,6 +18,7 @@ const StudentCompanyProfile = ({companyId}) => {
   const [expandedRound, setExpandedRound] = useState(null);
   const [showMentorshipModal, setShowMentorshipModal] = useState(false);
   const [message, setMessage] = useState('');
+  const [avgSalary, setAvgSalary] = useState('');
 
   // Fetch company details
   useEffect(() => {
@@ -37,12 +40,12 @@ const StudentCompanyProfile = ({companyId}) => {
 
         if (response.data.status && response.data.statusCode === 200) {
           const data = response.data.data;
+          const logoSrc = data.companyImg?.data || "https://via.placeholder.com/150";
 
-          // Use companyImg.data directly (it's already a full data URL like 'data:image/png;base64,...')
           setCompany({
             name: data.companyName || "Unknown Company",
-            logo: data.companyImg?.data || "https://via.placeholder.com/150",
-            lastVisit: "N/A" // Update if backend provides this
+            logo: logoSrc,
+            lastVisit: "N/A"
           });
         } else {
           setCompany({
@@ -67,7 +70,7 @@ const StudentCompanyProfile = ({companyId}) => {
   // Fetch alumni data
   useEffect(() => {
     const fetchAlumni = async () => {
-      if (!token || !selectedYear) return;
+      if (!token || !selectedYear || !companyId) return;
 
       setLoading(true);
       try {
@@ -86,11 +89,11 @@ const StudentCompanyProfile = ({companyId}) => {
 
         if (response.data.statusCode && Array.isArray(response.data.data)) {
           const mappedAlumni = response.data.data.map(alumni => {
-            // Handle profile image: check if file.data is already a full data URL
+            // Handle image: check if already a full data URL
             const imageSrc = alumni.file
-              ? alumni.file.data.startsWith('data:')
-                ? alumni.file.data // Already a full data URL (e.g., "data:image/jpeg;base64,...")
-                : `data:${alumni.file.contentType};base64,${alumni.file.data}` // Build it
+              ? alumni.file.data.startsWith('data:image')
+                ? alumni.file.data
+                : `data:${alumni.file.contentType};base64,${alumni.file.data}`
               : 'https://via.placeholder.com/150';
 
             return {
@@ -109,13 +112,27 @@ const StudentCompanyProfile = ({companyId}) => {
               })) || []
             };
           });
+
           setAlumniData(mappedAlumni);
+
+          // Calculate average salary
+          const validSalaries = mappedAlumni
+            .map(a => parseFloat(a.salary) || 0)
+            .filter(sal => sal > 0);
+
+          const avg = validSalaries.length > 0
+            ? (validSalaries.reduce((sum, s) => sum + s, 0) / validSalaries.length).toFixed(1)
+            : '0';
+
+          setAvgSalary(avg);
         } else {
           setAlumniData([]);
+          setAvgSalary('0');
         }
       } catch (error) {
         console.error("Error fetching alumni:", error);
         setAlumniData([]);
+        setAvgSalary('0');
       } finally {
         setLoading(false);
       }
@@ -130,13 +147,14 @@ const StudentCompanyProfile = ({companyId}) => {
     setSelectedAlumni(alumni);
     setExpandedRound(null);
     setMessage('');
+    setContactMode('');
   };
 
   const toggleRound = (alumniId, roundIndex) => {
     setExpandedRound(prev =>
       prev?.alumniId === alumniId && prev.roundIndex === roundIndex
         ? null
-        : { alumniId, roundIndex }
+        : { alumniId, roundIndex: roundIndex }
     );
   };
 
@@ -145,9 +163,16 @@ const StudentCompanyProfile = ({companyId}) => {
   };
 
   const sendMentorshipRequest = () => {
-    alert(`Mentorship request sent to ${selectedAlumni.name}!`);
+    const modeLabels = { call: "Call", video: "Video Meet", text: "Text Chat" };
+    alert(
+      `Mentorship request sent to ${selectedAlumni.name}!\n` +
+      `Reason: ${message || 'None'}\n` +
+      `Mode: ${modeLabels[contactMode] || 'Not specified'}`
+    );
     setShowMentorshipModal(false);
     setSelectedAlumni(null);
+    setMessage('');
+    setContactMode('');
   };
 
   const closeModal = () => {
@@ -155,11 +180,13 @@ const StudentCompanyProfile = ({companyId}) => {
     setExpandedRound(null);
     setShowMentorshipModal(false);
     setMessage('');
+    setContactMode('');
   };
 
   if (!company && loading) {
     return (
       <div className="flex min-h-screen bg-gray-50">
+        <NavbarStudent />
         <main className="ml-64 flex-1 p-8">Loading company info...</main>
       </div>
     );
@@ -167,11 +194,12 @@ const StudentCompanyProfile = ({companyId}) => {
 
   return (
     <div className="flex min-h-screen bg-gray-50 text-gray-800">
+      <NavbarStudent />
 
-      {/* Main Content */}
       <main className="ml-64 flex-1 p-8 overflow-y-auto">
         {/* Company Header */}
         <section className="bg-white rounded-2xl shadow-lg p-6 mb-8 border border-gray-100 flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
+          {/* Back Button + Company Info */}
           <div className="flex items-center space-x-4">
             <button
               onClick={() => window.history.back()}
@@ -191,6 +219,27 @@ const StudentCompanyProfile = ({companyId}) => {
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">{company?.name.toUpperCase()}</h1>
               </div>
+            </div>
+          </div>
+
+          {/* Stats: Placed Count & Avg Salary */}
+          <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-6 text-sm text-gray-600">
+            <div className="flex items-center space-x-2">
+              <svg viewBox="0 0 16 16" className="size-6" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#9182d9">
+                <path d="M8 7C9.65685 7 11 5.65685 11 4C11 2.34315 9.65685 1 8 1C6.34315 1 5 2.34315 5 4C5 5.65685 6.34315 7 8 7Z" fill="#ffffff" />
+                <path d="M14 12C14 10.3431 12.6569 9 11 9H5C3.34315 9 2 10.3431 2 12V15H14V12Z" fill="#ffffff" />
+              </svg>
+              <span className="font-medium text-gray-800">
+                {alumniData.length} Students Placed
+              </span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+              </svg>
+              <span className="font-medium text-gray-800">
+                Avg: {avgSalary} LPA
+              </span>
             </div>
           </div>
 
@@ -228,11 +277,45 @@ const StudentCompanyProfile = ({companyId}) => {
                 onClick={() => handleAlumniClick(alumni)}
               >
                 <div className="p-6 text-center">
-                  <img
-                    src={alumni.name}
-                    alt={alumni.name.charAt(0)}
-                    className="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-4 border-indigo-100 shadow-sm"
-                  />
+<div className="w-24 h-24 rounded-full mx-auto mb-4 border-4 border-indigo-100 shadow-sm flex items-center justify-center overflow-hidden">
+  {alumni.image ? (
+    <img
+      src={alumni.image}
+      alt={alumni.name}
+      className="w-full h-full object-cover"
+      onError={(e) => {
+        e.currentTarget.style.display = 'none';
+        const fallback = e.currentTarget.parentNode;
+        if (fallback) {
+          fallback.innerHTML = '';
+          const initial = alumni.name.charAt(0).toUpperCase();
+          fallback.textContent = initial;
+          fallback.style.backgroundColor = '#4f46e5';
+          fallback.style.color = 'white';
+          fallback.style.fontSize = '2rem';
+          fallback.style.display = 'flex';
+          fallback.style.alignItems = 'center';
+          fallback.style.justifyContent = 'center';
+        }
+      }}
+    />
+  ) : (
+    <span
+      style={{
+        backgroundColor: '#4f46e5',
+        color: 'white',
+        fontSize: '2rem',
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}
+    >
+      {alumni.name.charAt(0).toUpperCase()}
+    </span>
+  )}
+</div>
                   <h3 className="text-xl font-bold text-gray-800">{alumni.name}</h3>
                   <p className="text-indigo-600 font-medium">{alumni.role}</p>
                   <p className="text-sm text-gray-500 mt-1">Batch of {alumni.batch}</p>
@@ -254,14 +337,48 @@ const StudentCompanyProfile = ({companyId}) => {
       {selectedAlumni && (
         <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4 animate-fadeIn">
           <div className="bg-white rounded-3xl shadow-2xl max-w-5xl w-full max-h-[90vh] flex flex-col border border-gray-200 overflow-hidden">
-            {/* Modal Header */}
-            <div className="flex items-center justify-between p-8 bg-gradient-to-r from-indigo-50 to-purple-50 border-b border-gray-200">
+            {/* Header */}
+            <div className="flex items-center justify-between p-8 bg-gradient-to-r from-indigo-50 to-purple-50 border-b">
               <div className="flex items-center space-x-6">
-                <img
-                  src={selectedAlumni.image}
-                  alt={selectedAlumni.name}
-                  className="w-20 h-20 rounded-full object-cover border-4 border-white shadow-lg"
-                />
+<div className="w-20 h-20 rounded-full border-4 border-white shadow-lg flex items-center justify-center overflow-hidden">
+  {selectedAlumni.image ? (
+    <img
+      src={selectedAlumni.image}
+      alt={selectedAlumni.name}
+      className="w-full h-full object-cover"
+      onError={(e) => {
+        e.currentTarget.style.display = 'none';
+        const fallback = e.currentTarget.parentNode;
+        if (fallback) {
+          fallback.innerHTML = '';
+          const initial = selectedAlumni.name.charAt(0).toUpperCase();
+          fallback.textContent = initial;
+          fallback.style.backgroundColor = '#4f46e5';
+          fallback.style.color = 'white';
+          fallback.style.fontSize = '1.5rem';
+          fallback.style.display = 'flex';
+          fallback.style.alignItems = 'center';
+          fallback.style.justifyContent = 'center';
+        }
+      }}
+    />
+  ) : (
+    <span
+      style={{
+        backgroundColor: '#4f46e5',
+        color: 'white',
+        fontSize: '1.5rem',
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}
+    >
+      {selectedAlumni.name.charAt(0).toUpperCase()}
+    </span>
+  )}
+</div>
                 <div>
                   <h2 className="text-3xl font-bold text-gray-900">{selectedAlumni.name}</h2>
                   <p className="text-xl text-indigo-600 font-medium">{selectedAlumni.role}</p>
@@ -273,16 +390,14 @@ const StudentCompanyProfile = ({companyId}) => {
               </div>
               <button
                 onClick={closeModal}
-                className="ml-4 w-10 h-10 flex items-center justify-center rounded-full bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold text-lg transition"
-                aria-label="Close modal"
+                className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold text-lg"
               >
                 ×
               </button>
             </div>
 
-            {/* Modal Body */}
+            {/* Body */}
             <div className="flex-1 overflow-y-auto p-8 space-y-8">
-              {/* LinkedIn / Resume Link */}
               <div>
                 <h3 className="text-2xl font-bold text-gray-800 mb-4">📄 LinkedIn Profile</h3>
                 <a
@@ -292,18 +407,12 @@ const StudentCompanyProfile = ({companyId}) => {
                   className="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 transition"
                 >
                   <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M12 10v6m0 0l-3-3m3 3l3-3m2 3a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
+                    <path d="M12 10v6m0 0l-3-3m3 3l3-3m2 3a9 9 0 11-18 0 9 9 0 0118 0z" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
                   </svg>
                   View Profile
                 </a>
               </div>
 
-              {/* About */}
               {selectedAlumni.generalDesc && (
                 <div>
                   <h3 className="text-2xl font-bold text-gray-800 mb-3">About</h3>
@@ -311,15 +420,11 @@ const StudentCompanyProfile = ({companyId}) => {
                 </div>
               )}
 
-              {/* Interview Rounds */}
               <div>
                 <h3 className="text-2xl font-bold text-gray-800 mb-5">Interview Process</h3>
                 <div className="space-y-4">
                   {selectedAlumni.experience.map((round, idx) => (
-                    <div
-                      key={idx}
-                      className="border border-gray-200 rounded-xl overflow-hidden hover:shadow-md transition-shadow"
-                    >
+                    <div key={idx} className="border border-gray-200 rounded-xl overflow-hidden">
                       <div className="flex items-center justify-between p-4 bg-white">
                         <div>
                           <h4 className="font-bold text-gray-800">{round.round}</h4>
@@ -327,18 +432,16 @@ const StudentCompanyProfile = ({companyId}) => {
                         </div>
                         <button
                           onClick={() => toggleRound(selectedAlumni.id, idx)}
-                          className="ml-4 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 transition"
+                          className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200"
                         >
                           <span className="text-sm">
-                            {expandedRound?.alumniId === selectedAlumni.id && expandedRound.roundIndex === idx
-                              ? '▲'
-                              : '▼'}
+                            {expandedRound?.alumniId === selectedAlumni.id && expandedRound.roundIndex === idx ? '▲' : '▼'}
                           </span>
                         </button>
                       </div>
                       {expandedRound?.alumniId === selectedAlumni.id && expandedRound.roundIndex === idx && (
-                        <div className="p-4 bg-gray-50 border-t border-gray-200 animate-fadeIn">
-                          <p className="text-gray-700 leading-relaxed">{round.details}</p>
+                        <div className="p-4 bg-gray-50 border-t">
+                          <p className="text-gray-700">{round.details}</p>
                         </div>
                       )}
                     </div>
@@ -348,7 +451,7 @@ const StudentCompanyProfile = ({companyId}) => {
             </div>
 
             {/* Footer */}
-            <div className="p-6 bg-gray-50 border-t border-gray-200 text-right">
+            <div className="p-6 bg-gray-50 border-t text-right">
               <button
                 onClick={openMentorshipModal}
                 className="px-8 py-3 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 transition"
@@ -366,16 +469,39 @@ const StudentCompanyProfile = ({companyId}) => {
           <div className="bg-white rounded-3xl shadow-2xl max-w-lg w-full p-8 border border-gray-200">
             <h3 className="text-3xl font-bold text-gray-900 mb-2">Request Mentorship</h3>
             <p className="text-gray-600 mb-6">
-              Send a personalized message to{' '}
-              <span className="font-semibold text-indigo-600">{selectedAlumni?.name}</span>.
+              Connect with{' '}
+              <span className="font-semibold text-indigo-600">{selectedAlumni?.name}</span>
             </p>
-            <textarea
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              placeholder="Hi, I'm preparing for interviews and would love your guidance..."
-              className="w-full p-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-3 focus:ring-indigo-500 h-32 resize-none text-sm"
-            />
-            <div className="flex justify-end space-x-3 mt-6">
+
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-800 mb-2">
+                Why do you want to connect?
+              </label>
+              <textarea
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder="E.g., Need guidance on DSA preparation and interview tips..."
+                className="w-full p-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-3 focus:ring-indigo-500 resize-none h-32 text-sm placeholder-gray-400"
+              />
+            </div>
+
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-800 mb-2">
+                Preferred Mode of Contact
+              </label>
+              <select
+                value={contactMode}
+                onChange={(e) => setContactMode(e.target.value)}
+                className="w-full py-3 px-4 border border-gray-300 rounded-xl bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              >
+                <option value="">Select a mode</option>
+                <option value="call">📞 Call</option>
+                <option value="video">📹 Video Meet</option>
+                <option value="text">💬 Text Chat</option>
+              </select>
+            </div>
+
+            <div className="flex justify-end space-x-3">
               <button
                 onClick={() => setShowMentorshipModal(false)}
                 className="px-6 py-2 text-gray-600 hover:text-gray-800 font-medium rounded-xl hover:bg-gray-100 transition"
@@ -384,17 +510,17 @@ const StudentCompanyProfile = ({companyId}) => {
               </button>
               <button
                 onClick={sendMentorshipRequest}
-                disabled={!message.trim()}
+                disabled={!message.trim() || !contactMode}
                 className="px-6 py-2 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition"
               >
-                Connect
+                Send Request
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Fade-in Animation */}
+      {/* Animation */}
       <style jsx>{`
         @keyframes fadeIn {
           from {
