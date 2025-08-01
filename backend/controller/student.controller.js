@@ -1,6 +1,7 @@
-import { deletePendingToken, filterStudentByYearAndCompany, generateToken, getStudent, loginStudent,  registerStudent, updateStudent, viewCompany, viewTokensByStudent } from "../services/student.service.js";
+import { deletePendingToken, filterStudentByYearAndCompany, generateToken, getCompany, getStudent, loginStudent,  registerStudent, updateStudent, viewCompany, viewTokensByStudent } from "../services/student.service.js";
 import { BadRequest } from "../utils/errors.js";
 import { response } from 'express';
+import { Company } from './../models/company.model.js';
 
 
 
@@ -109,3 +110,13 @@ export const FilterAlumniByYearAndCompany=async(req,res,next)=>{
     }
 }
 
+export const GetCompany=async(req,res,next)=>{
+    try{
+        const {companyId}=req.body;
+        const response=await getCompany(companyId);
+        res.status(response.statusCode).json(response);
+    }
+    catch(err){
+        next(err)
+    }
+}

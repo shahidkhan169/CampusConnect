@@ -1,5 +1,5 @@
 import express from 'express'
-import { DeleteToken, FilterAlumniByYearAndCompany, GenerateToken, GetStudent, Login, Register, Update, ViewCompany, ViewTokens } from '../../controller/student.controller.js';
+import { DeleteToken, FilterAlumniByYearAndCompany, GenerateToken, GetCompany, GetStudent, Login, Register, Update, ViewCompany, ViewTokens } from '../../controller/student.controller.js';
 import { auth } from './../../middlewares/auth.js';
 import { LoginSchema, studentRegisterSchema, tokenSchema } from '../../dtos/student.dto.js';
 import { validateRequest } from './../../middlewares/ValidationRequest.js';
@@ -16,3 +16,4 @@ StudentRouter.delete('/deleteToken/:tokenId',auth,DeleteToken);
 StudentRouter.get('/getStudent',auth,GetStudent);
 StudentRouter.get('/getCompanies',ViewCompany);
 StudentRouter.post('/sortAlumni',FilterAlumniByYearAndCompany);
+StudentRouter.post('/getCompany',GetCompany);

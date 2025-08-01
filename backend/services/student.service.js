@@ -159,9 +159,22 @@ export const filterStudentByYearAndCompany=async(dto)=>{
         throw new BadRequest("No Alumni Found");
 
     return new GeneralResponse(
-        200,
         true,
+        200,
         alumnis,
         "Sorted Alumnis"
+    )
+}
+
+export const getCompany=async(companyId)=>{
+    const company=await Company.findById(companyId);
+    if(!company)
+        throw new BadRequest("No Company Found");
+
+    return new GeneralResponse(
+        true,
+        200,
+        company,
+        "Company Detail"
     )
 }
