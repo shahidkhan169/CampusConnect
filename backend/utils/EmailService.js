@@ -3,8 +3,8 @@ import nodemailer from 'nodemailer';
 
 export class EmailService {
   static async sendInvitationEmail({ email, fullName, id,template}) {
-    const acceptUrl = `${process.env.BASE_URL}/invitation/accept/${id}`;
-    const declineUrl = `${process.env.BASE_URL}/invitation/decline/${id}`;
+    const acceptUrl = `${process.env.NGROK_URL}/invitation/accept/${id}`;
+    const declineUrl = `${process.env.NGROK_URL}/invitation/decline`;
     const html = template
         .replace('{{acceptUrl}}', acceptUrl)
         .replace('{{declineUrl}}', declineUrl)

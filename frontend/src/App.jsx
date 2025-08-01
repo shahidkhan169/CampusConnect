@@ -5,6 +5,7 @@
   import AdminHome from './Pages/Admin/Admin.Home'
   import StudentCompanyProfile from './Pages/Student/Student.CompanyProfile'
   import { AuthProvider } from './Context/AuthContext'
+import Invitation from './static/Invitation.jsx'
 
   function App() {
     return (
@@ -16,6 +17,7 @@
           <Route path='/student/profile' element={<StudentProfile/>}/>
           <Route path='/admin/home' element={<AdminHome/>}/>
           <Route path="/temp" element={<StudentCompanyProfile/>}/>
+          <Route path='/invitation/accept/:id' element={<Invitation/>} />
         </Routes>
       </BrowserRouter>
       </AuthProvider>

@@ -1,5 +1,5 @@
 import { Admin } from "../models/admin.model.js";
-import { declineTokenByAdmin, getAlumni, loginAlumni, scheduleTokenByAdmin,  updateAlumniAtFirst,  viewTokensByAlumni } from "../services/alumni.service.js";
+import { declineTokenByAdmin, getAlumni, loginAlumni, scheduleTokenByAdmin,  updateAlumni,  updateAlumniAtFirst,  viewTokensByAlumni } from "../services/alumni.service.js";
 import { BadRequest } from "../utils/errors.js";
 import { response } from 'express';
 
@@ -80,4 +80,15 @@ export const DeclineToken = async (req, res, next) => {
     }
 }
 
+export const UpdateAlumni=async(req,res,next)=>{
+    try{
+        const userId=req.userId;
+        const dto=req.body;
+        const response=await updateAlumni(userId,dto);
+        res.status(response.statusCode).json(response);
+    }
+    catch(err){
+        next(err);
+    }
+}
 

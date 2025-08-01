@@ -5,6 +5,7 @@ import { Company } from './../models/company.model.js';
 
 
 
+
 export const Register = async (req, res, next) => {
     try {
         const dto =req.body;
@@ -120,3 +121,4 @@ export const GetCompany=async(req,res,next)=>{
         next(err)
     }
 }
+

@@ -129,3 +129,20 @@ export const getAlumni=async(id)=>{
         "Alumni Detail"
     )
 }
+
+export const updateAlumni=async(id,dto)=>{
+    const alumni=await Alumni.findByIdAndUpdate(id,dto,{
+        new:true,
+        runValidators:true
+    });
+
+    if(!alumni)
+        throw new BadRequest("No such Alumni");
+
+    return new GeneralResponse(
+        true,
+        200,
+        alumni,
+        "Alumni Updated Successfully"
+    )
+}

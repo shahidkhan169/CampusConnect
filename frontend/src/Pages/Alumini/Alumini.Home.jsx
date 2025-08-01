@@ -145,9 +145,7 @@ const AlumniHomePage = () => {
                 <p className="text-gray-600">Batch of {alumniBatch} • {alumniDepartment}</p>
               </div>
             </div>
-            <button className="mt-4 md:mt-0 px-4 py-2 bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-medium rounded-lg hover:from-indigo-700 hover:to-blue-700 transition-colors">
-              Share Interview Experience
-            </button>
+            
           </div>
         </div>
 

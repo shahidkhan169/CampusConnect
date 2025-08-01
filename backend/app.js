@@ -6,7 +6,6 @@ import { errorHandler } from './middlewares/errorHandler.js';
 import { morganLogger } from './utils/morgan.js';
 
 
-
 export const app=express();
 
 app.use(cors())
