@@ -4,7 +4,7 @@ import NavbarStudent from '../../Components/Component.NavbarStudent';
 import Spinner from '../../Components/Component.Spinner';
 import { authContext } from '../../Context/AuthContext';
 
-const StudentDashboard = () => {
+const StudentDashboard = ({setCompanyId}) => {
   const{firstName,setFirstName,lastName,setLastName,token,branch,setBranch}=useContext(authContext);
   const [companies, setCompanies] = useState([]);
   const [loading, setLoading]=useState(true);
@@ -32,10 +32,6 @@ const StudentDashboard = () => {
     };
     fetch();
   }, []);
-
-  const handleCompanyClick = (companyId) => {
-    window.location.href = `/company/${companyId}/years`;
-  };
 
   return (
     <div className="flex min-h-screen bg-gray-50">
@@ -88,7 +84,7 @@ const StudentDashboard = () => {
               <div
                 key={company._id}
                 className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-all duration-300 cursor-pointer transform hover:-translate-y-1"
-                onClick={() => handleCompanyClick(company._id)}
+                onClick={() => setCompanyId(company._id)}
               >
                 <div className="relative h-36">
                   <img
