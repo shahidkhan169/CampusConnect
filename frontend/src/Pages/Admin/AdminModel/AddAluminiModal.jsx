@@ -36,7 +36,7 @@ const InviteAlumniModal = ({ isOpen, onClose, onAlumniInvited }) => {
     try {
       const res = await BackendClient.post('admin/invite', payload, {
         headers: {
-          Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ODRhZTFkMmFhNTIyYTkwZWZmMjlkMCIsInN1cGVyQWRtaW4iOmZhbHNlLCJpYXQiOjE3NTM5ODY4NjR9.dqJkxz7fGeI-4GQUPSWI-1C8QOGFPwPx5DBy7-IFHNI`, // ✅ use env variable
+          Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ODRhZTFkMmFhNTIyYTkwZWZmMjlkMCIsInN1cGVyQWRtaW4iOmZhbHNlLCJpYXQiOjE3NTQwMjAxNTV9.rUHqvb29GBZu_FzdCxlAiUVuuYHxrw1psMn5lAVdapQ` 
         },
       });
 

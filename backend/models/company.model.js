@@ -11,6 +11,14 @@ const companySchema = new mongoose.Schema({
     companyImg: {
         data: String,
         contentType: String,
+    },
+    avgPackage:{
+        type:String,
+        required:true
+    },
+    description:{
+        type:String,
+        required:true
     }
 })
 

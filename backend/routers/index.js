@@ -10,3 +10,6 @@ router.use(STUDENT_ROUTE, StudentRouter)
 router.use(ADMIN_ROUTE,AdminRouter)
 router.use(ALUMNI_ROUTE,AlumniRouter)
 
+
+
+

@@ -10,6 +10,8 @@ import { GeneralResponse } from "../utils/GeneralResponse.js";
 import { STATUS } from "../constants/status.constants.js";
 import { Company } from "../models/company.model.js";
 import { toCamelCase } from "../utils/toCamelCase.js";
+import { PlacedStudent } from "../models/placedStudent.model.js";
+import XLSX from "xlsx";
 
 
 export const registerAdmin = async (dto) => {
@@ -68,27 +70,27 @@ export const InvitationService = {
     }
 };
 
-export const updateInvitation= async (invitationId) => {
-    const exists=await Invitation.findById(invitationId);
-    if(!exists)
+export const updateInvitation = async (invitationId) => {
+    const exists = await Invitation.findById(invitationId);
+    if (!exists)
         throw new BadRequest("Invitation Not Found");
-    const updatedInvitation=await Invitation.findByIdAndUpdate(invitationId,{status:STATUS.ACCEPTED,acceptedAt:Date.now()},{
-        new:true,
-        runValidators:true
+    const updatedInvitation = await Invitation.findByIdAndUpdate(invitationId, { status: STATUS.ACCEPTED, acceptedAt: Date.now() }, {
+        new: true,
+        runValidators: true
     });
 
-    const dto={
-        email:updatedInvitation.email,
+    const dto = {
+        email: updatedInvitation.email,
     }
     return dto;
 }
-        
-export const createAlumni=async(dto)=>{
-    const existing=await Alumni.findOne({email:dto.email});
-    if(existing)
+
+export const createAlumni = async (dto) => {
+    const existing = await Alumni.findOne({ email: dto.email });
+    if (existing)
         throw new BadRequest("User Already Exists");
-    const newAlumni=new Alumni(dto);
-    const savedAlumni=await newAlumni.save();
+    const newAlumni = new Alumni(dto);
+    const savedAlumni = await newAlumni.save();
     return new GeneralResponse(
         true,
         201,
@@ -97,23 +99,55 @@ export const createAlumni=async(dto)=>{
     )
 }
 
-export const addCompany=async(dto)=>{
-    
-    let _companyName=toCamelCase(dto.companyName);
-    const exists=await Company.findOne({companyName:_companyName});
-    if(exists)
-        throw new BadRequest("Company Already Exists");
+export const addCompanyAndPlacedStudent = async (companyName, companyImg, avgPackage, description, excelFile) => {
+    const workbook = XLSX.read(excelFile.buffer, { type: "buffer" });
+    const sheetName = workbook.SheetNames[0];
+    const worksheet = workbook.Sheets[sheetName];
+    const rows = XLSX.utils.sheet_to_json(worksheet);
+    const exists = await Company.findOne({
+        companyName: { $regex: `^${companyName}$`, $options: "i" }
+    });
 
-    const company=new Company({
-        companyName:_companyName,
-        companyImg:dto.companyImg
-    })
-    await company.save();
+    let company_Id;
+    if (!exists) {
+        const companySet = new Company(
+            {
+                companyName: companyName,
+                companyImg: {
+                    data: companyImg.buffer.toString("base64"),
+                    contentType: companyImg.mimetype
+                },
+                avgPackage: avgPackage,
+                description: description
+            }
+        )
+        const company = await companySet.save();
+        company_Id = company._id;
+    }
+    else {
+        company_Id = exists._id
+    }
 
+    const uniqueRowsMap = new Map();
+
+    rows.forEach(row => {
+        const key = row.email?.toLowerCase();
+        if (key && !uniqueRowsMap.has(key)) {
+            uniqueRowsMap.set(key, {
+                name: row.name,
+                email: row.email,
+                department: row.department,
+                companyId: company_Id,
+                package: row.package
+            });
+        }
+    });
+    const placedStudentDetails = Array.from(uniqueRowsMap.values());
+    const details = await PlacedStudent.insertMany(placedStudentDetails);
     return new GeneralResponse(
         true,
         200,
-        company,
-        "Company Added Successfully"
+        details,
+        "Details uploaded Successfully"
     )
 }

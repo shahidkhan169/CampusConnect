@@ -9,3 +9,5 @@ export const COMPANY_MODEL="Company"
 export const INVITATION_MODEL="Invitation"
 
 export const TOKEN_MODEL="Token"
+
+export const PLACED_STUDENT_MODEL="PlacedStudent"
